@@ -13,14 +13,6 @@ import Reanimated, {
 
 const { width } = Dimensions.get('window');
 
-interface ListItemProps {
-  item: { id: number; task: string };
-  index: number;
-  completed: Set<number>;
-  setCompleted: (item: { id: number; task: string }) => void;
-  viewableItems: SharedValue<ViewToken[]>;
-}
-
 const ListItem = React.memo(({
   item,
   index,
@@ -34,7 +26,7 @@ const ListItem = React.memo(({
 
   const rStyle = useAnimatedStyle(() => {
     const isVisible = Boolean(
-      viewableItems.value.find(viewableItem => viewableItem.item.id === item.id && viewableItem.isViewable)
+      viewableItems.value.find((viewableItem: ViewToken) => viewableItem.item.id === item.id && viewableItem.isViewable)
     );
     return {
       opacity: withTiming(isVisible ? 1 : 0.4),
@@ -55,6 +47,8 @@ const ListItem = React.memo(({
       viewTranslate.value = 0;
     }
   }, [isCompleted, scaleAnim, viewTranslate]);
+
+  
 
   return (
     <Reanimated.View style={[styles.container, { transform: [{ translateX: viewTranslate }] }, rStyle]}>
