@@ -3,10 +3,11 @@ import React from 'react';
 import mainScreenStyle from './mainScreen.style';
 import imagePath from '../assets/imagePath';
 import TaskList from './TaskList';
+import colors from '../constants/colors';
 
 const MainScreen = () => {
   return (
-    <View style={{ flex: 1, }}>
+    <View style={mainScreenStyle.appContainer}>
       <ImageBackground
         source={imagePath.appBackground}
         resizeMode='stretch'

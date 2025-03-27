@@ -1,9 +1,25 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
+    <!-- Base application theme -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        
+        <!-- Set window background to null (not splash) -->
+        <item name="android:windowBackground">@null</item>
+
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+
+    <!-- Fix missing Theme.SplashScreen -->
+    <style name="Theme.SplashScreen" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:windowSplashScreenBackground">@color/bootsplash_background</item>
+        <!-- <item name="android:windowSplashScreenAnimatedIcon">@mipmap/bootsplash_logo</item> -->
+    </style>
+
+    <style name="BootTheme" parent="Theme.BootSplash.TransparentStatus">
+        <item name="darkContentBarsStyle">true</item>
+        <item name="android:windowBackground">@drawable/splash</item>
     </style>
 
 </resources>

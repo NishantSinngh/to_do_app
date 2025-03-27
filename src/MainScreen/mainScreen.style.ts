@@ -2,6 +2,10 @@ import { StyleSheet } from 'react-native';
 import colors from '../constants/colors';
 
 export default StyleSheet.create({
+  appContainer: {
+    flex: 1,
+    backgroundColor: colors.appBackground
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -26,16 +30,16 @@ export default StyleSheet.create({
     marginLeft: 20,
   },
   footer: {
-    position:'absolute',
+    position: 'absolute',
     alignSelf: 'flex-end',
-    bottom:50,
-    right:30,
-    backgroundColor:colors.appBackground,
-    borderRadius:30,
-    overflow:'hidden'
+    bottom: 50,
+    right: 30,
+    backgroundColor: colors.appBackground,
+    borderRadius: 30,
+    overflow: 'hidden'
   },
-  addImage:{
-    height:60,
-    width:60
+  addImage: {
+    height: 60,
+    width: 60
   }
 });
