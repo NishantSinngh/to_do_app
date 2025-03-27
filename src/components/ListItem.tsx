@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Dimensions, Pressable, Image } from 'react-native';
-import React from 'react';
+import { View, Text, StyleSheet, Dimensions, Pressable, Image, Animated } from 'react-native';
+import React, { useRef, useEffect } from 'react';
 import colors from '../constants/colors';
 import imagePath from '../assets/imagePath';
 
@@ -18,32 +18,65 @@ const ListItem = React.memo(({
     setCompleted: (item: any) => void
 }) => {
 
-    const isCompleted = completed.find(completedItem => completedItem.id === item.id)
+    const isCompleted = completed.find(completedItem => completedItem.id === item.id);
+
+    const scaleAnim = useRef(new Animated.Value(0.1)).current;
+    const viewTranslate = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        if (isCompleted) {
+            Animated.parallel([
+                Animated.spring(scaleAnim, {
+                    toValue: 1,
+                    useNativeDriver: true,
+                }),
+                Animated.sequence([
+                    Animated.timing(viewTranslate, {
+                        toValue: -10,
+                        duration: 50,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(viewTranslate, {
+                        toValue: 10,
+                        duration: 50,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(viewTranslate, {
+                        toValue: 0,
+                        duration: 50,
+                        useNativeDriver: true
+                    })
+                ])
+            ]).start();
+        } else {
+            scaleAnim.setValue(0);
+        }
+    }, [isCompleted]);
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { transform: [{ translateX: viewTranslate }] }]}>
             <Pressable
                 android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
-                style={({ pressed }) => [
-                    styles.button,
-                    //   pressed && styles.buttonPressed,
-                ]}
-                onPress={() => setCompleted(item)}
+                style={styles.button}
+                onPress={() => setTimeout(() => {
+                    (setCompleted(item))
+                }, 150)}
             >
                 {!isCompleted ? (
                     <View style={styles.checkBox} />
-                )
-                    :
-                    (
-                        <Image source={imagePath.checkBox} style={styles.checkBoxImage} />
-                    )}
+                ) : (
+                    <Animated.Image
+                        source={imagePath.checkBox}
+                        style={[styles.checkBoxImage, { transform: [{ scale: scaleAnim }] }]}
+                    />
+                )}
                 <Text
                     style={[styles.textStyle, isCompleted && styles.completedTextStyle]}
                 >
                     {item.task}
                 </Text>
             </Pressable>
-        </View>
+        </Animated.View>
     );
 });
 
@@ -88,7 +121,6 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         borderColor: colors.blue,
     },
-
 });
 
 export default ListItem;
