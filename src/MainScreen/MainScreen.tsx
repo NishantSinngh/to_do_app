@@ -3,6 +3,7 @@ import React from 'react';
 import mainScreenStyle from './mainScreen.style';
 import imagePath from '../assets/imagePath';
 import TaskList from './TaskList';
+import colors from '../constants/colors';
 
 const MainScreen = () => {
   return (
@@ -21,7 +22,7 @@ const MainScreen = () => {
         </View>
         <View style={mainScreenStyle.footer}>
           <Pressable
-            android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
+            android_ripple={{ color: colors.ripple }}
           >
             <Image source={imagePath.add} style={mainScreenStyle.addImage} />
           </Pressable>

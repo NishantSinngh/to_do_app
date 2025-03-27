@@ -2,6 +2,7 @@ import { StatusBar, View, } from 'react-native'
 import React, { useEffect } from 'react'
 import { MainScreen } from './src'
 import BootSplash from "react-native-bootsplash"
+import InoputModal from './src/components/InputModal'
 
 
 const App = () => {
@@ -12,7 +13,8 @@ const App = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <MainScreen />
+      {/* <MainScreen /> */}
+      <InoputModal/>
       <StatusBar barStyle={'light-content'} translucent backgroundColor={"transparent"} />
     </View>
   )
