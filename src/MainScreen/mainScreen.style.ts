@@ -13,19 +13,19 @@ export default StyleSheet.create({
     position: 'absolute'
   },
   text: {
-    fontSize: 20,
+    fontSize: 24,
     color: 'white',
     fontWeight: 'bold',
     marginBottom: 20,
   },
   headerContainer: {
-    justifyContent:'center',
-    alignItems:'flex-start',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
     marginTop: 50,
     marginLeft: 20,
   },
-  footer:{
-    margin:20,
-    alignSelf:'center',
+  footer: {
+    margin: 20,
+    alignSelf: 'center',
   }
 });

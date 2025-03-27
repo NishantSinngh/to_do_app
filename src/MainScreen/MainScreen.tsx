@@ -14,7 +14,7 @@ const MainScreen = () => {
       />
       <View style={mainScreenStyle.container}>
         <View style={mainScreenStyle.headerContainer}>
-          <Text style={mainScreenStyle.text}>Heading</Text>
+          <Text style={mainScreenStyle.text}>Tasks</Text>
         </View>
         <View style={{ flex: 1 }}>
           <TaskList />

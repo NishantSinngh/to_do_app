@@ -5,7 +5,21 @@ import imagePath from '../assets/imagePath';
 
 const { width } = Dimensions.get('window');
 
-const ListItem = React.memo(({ item }: { item: string }) => {
+const ListItem = React.memo(({
+    item,
+    index,
+    completed,
+    setCompleted
+
+}: {
+    item: { id: number; task: string },
+    index: number,
+    completed: { id: number; task: string }[],
+    setCompleted: (item: any) => void
+}) => {
+
+    const isCompleted = completed.find(completedItem => completedItem.id === item.id)
+
     return (
         <View style={styles.container}>
             <Pressable
@@ -14,10 +28,20 @@ const ListItem = React.memo(({ item }: { item: string }) => {
                     styles.button,
                     //   pressed && styles.buttonPressed,
                 ]}
+                onPress={() => setCompleted(item)}
             >
-                <View  style={styles.checkBox} />
-                <Image source={imagePath.checkBox} style={styles.checkBoxImage} />
-                <Text style={styles.textStyle}>{item}</Text>
+                {!isCompleted ? (
+                    <View style={styles.checkBox} />
+                )
+                    :
+                    (
+                        <Image source={imagePath.checkBox} style={styles.checkBoxImage} />
+                    )}
+                <Text
+                    style={[styles.textStyle, isCompleted && styles.completedTextStyle]}
+                >
+                    {item.task}
+                </Text>
             </Pressable>
         </View>
     );
@@ -38,13 +62,13 @@ const styles = StyleSheet.create({
         color: colors.white,
     },
     completedTextStyle: {
-        textDecorationLine:'line-through',
+        textDecorationLine: 'line-through',
     },
     button: {
         flex: 1,
-        flexDirection:'row',
-        justifyContent:'flex-start',
-        alignItems:'center',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
         backgroundColor: colors.darkBluish,
         padding: 15,
     },
@@ -54,15 +78,15 @@ const styles = StyleSheet.create({
     checkBoxImage: {
         width: 24,
         height: 24,
-        marginRight:10,
+        marginRight: 10,
     },
     checkBox: {
         width: 24,
         height: 24,
-        marginRight:10,
-        borderWidth:1,
-        borderRadius:12,
-        borderColor:colors.blue,
+        marginRight: 10,
+        borderWidth: 1,
+        borderRadius: 12,
+        borderColor: colors.blue,
     },
 
 });
