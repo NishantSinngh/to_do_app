@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import colors from '../constants/colors';
 
 export default StyleSheet.create({
   container: {
@@ -25,7 +26,16 @@ export default StyleSheet.create({
     marginLeft: 20,
   },
   footer: {
-    margin: 20,
-    alignSelf: 'center',
+    position:'absolute',
+    alignSelf: 'flex-end',
+    bottom:50,
+    right:30,
+    backgroundColor:colors.appBackground,
+    borderRadius:30,
+    overflow:'hidden'
+  },
+  addImage:{
+    height:60,
+    width:60
   }
 });

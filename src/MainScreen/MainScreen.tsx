@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, Pressable } from 'react-native';
+import { View, Text, ImageBackground, Pressable, Image } from 'react-native';
 import React from 'react';
 import mainScreenStyle from './mainScreen.style';
 import imagePath from '../assets/imagePath';
@@ -20,8 +20,10 @@ const MainScreen = () => {
           <TaskList />
         </View>
         <View style={mainScreenStyle.footer}>
-          <Pressable>
-            <Text>ADD</Text>
+          <Pressable
+            android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
+          >
+            <Image source={imagePath.add} style={mainScreenStyle.addImage} />
           </Pressable>
         </View>
       </View>
