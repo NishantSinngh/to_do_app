@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Pressable, Image } from 'react-native';
 import React from 'react';
 import colors from '../constants/colors';
+import imagePath from '../assets/imagePath';
 
 const { width } = Dimensions.get('window');
 
@@ -14,6 +15,8 @@ const ListItem = React.memo(({ item }: { item: string }) => {
                     //   pressed && styles.buttonPressed,
                 ]}
             >
+                <View  style={styles.checkBox} />
+                <Image source={imagePath.checkBox} style={styles.checkBoxImage} />
                 <Text style={styles.textStyle}>{item}</Text>
             </Pressable>
         </View>
@@ -34,14 +37,34 @@ const styles = StyleSheet.create({
     textStyle: {
         color: colors.white,
     },
+    completedTextStyle: {
+        textDecorationLine:'line-through',
+    },
     button: {
         flex: 1,
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'center',
         backgroundColor: colors.darkBluish,
         padding: 15,
     },
     buttonPressed: {
         opacity: 0.5,
     },
+    checkBoxImage: {
+        width: 24,
+        height: 24,
+        marginRight:10,
+    },
+    checkBox: {
+        width: 24,
+        height: 24,
+        marginRight:10,
+        borderWidth:1,
+        borderRadius:12,
+        borderColor:colors.blue,
+    },
+
 });
 
 export default ListItem;
