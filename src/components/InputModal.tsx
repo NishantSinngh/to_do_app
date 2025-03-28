@@ -9,7 +9,6 @@ import {
   TouchableWithoutFeedback,
   View,
   BackHandler,
-  GestureResponderEvent,
 } from 'react-native';
 import React, { useEffect } from 'react';
 import colors from '../constants/colors';
@@ -23,7 +22,7 @@ import Animated, {
 
 const { width } = Dimensions.get('window');
 
-const InputModal = ({
+const InputModal = React.memo(({
   isVisible,
   onCancel,
 }: {
@@ -31,10 +30,12 @@ const InputModal = ({
   onCancel: () => void;
 }) => {
   const opacity = useSharedValue(0);
+  const scale = useSharedValue(0.9);
 
   useEffect(() => {
     if (isVisible) {
-      opacity.value = withTiming(1, { duration: 300 });
+      scale.value = withTiming(1)
+      opacity.value = withTiming(1, { duration: 200 });
     }
   }, [isVisible]);
 
@@ -54,19 +55,16 @@ const InputModal = ({
     };
   }, [isVisible, onCancel]);
 
-  function handleModal(){
-    if (isVisible) {
-      onCancel();
-    }
-  }
 
   const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
     opacity: opacity.value,
   }));
+
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Animated.View style={[styles.appContainer, animatedStyle]}>
-        <Pressable onPress={handleModal} style={styles.crossImageContainer}>
+        <Pressable onPress={onCancel} style={styles.crossImageContainer}>
           <Image source={imagePath.cross} />
         </Pressable>
         <Text style={styles.headerText}>Enter New Task</Text>
@@ -81,7 +79,7 @@ const InputModal = ({
         <View style={styles.addButtonContainer}>
           <Pressable
             android_ripple={{ color: colors.ripple }}
-            onPress={handleModal}
+            onPress={onCancel}
             style={styles.addButton}>
             <Text style={styles.addButtonText}>Add</Text>
           </Pressable>
@@ -89,7 +87,7 @@ const InputModal = ({
       </Animated.View>
     </TouchableWithoutFeedback>
   );
-};
+});
 
 export default InputModal;
 
@@ -103,7 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: colors.darkBluish,
-    zIndex:10,
+    zIndex: 10,
   },
   headerText: {
     color: colors.white,

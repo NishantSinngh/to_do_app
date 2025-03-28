@@ -55,7 +55,7 @@ const ListItem = React.memo(({
       <Pressable
         android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
         style={styles.button}
-        onPress={() => setTimeout(() => setCompleted(item), 150)}
+        onPress={() => setTimeout(() => setCompleted(item), 100)}
       >
         {!isCompleted ? (
           <View style={styles.checkBox} />
