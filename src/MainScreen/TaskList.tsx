@@ -2,6 +2,7 @@ import { View, StyleSheet, FlatList, ViewToken, Text, Dimensions } from 'react-n
 import React, { useState, useCallback, useRef } from 'react';
 import ListItem from '../components/ListItem';
 import { useSharedValue } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 interface Task {
     id: number;
@@ -33,6 +34,10 @@ const DATA: Task[] = [
 ];
 
 const TaskList = React.memo(() => {
+
+    const tasks = useSelector((state: any) => state.task.tasks)
+
+
     const [completed, setCompleted] = useState<Set<number>>(new Set());
     const viewableItems = useSharedValue<ViewToken[]>([]);
 
@@ -62,7 +67,8 @@ const TaskList = React.memo(() => {
                 showsVerticalScrollIndicator={false}
                 style={{ flex: 1 }}
                 contentContainerStyle={{ flexGrow: 1 }}
-                data={DATA}
+                data={tasks}
+                ListFooterComponent={<View style={{height:80,}} />}
                 ListEmptyComponent={() =>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: width }}>
                         <Text style={{ fontSize: 24, color: '#fff' }}>No Tasks Available</Text>

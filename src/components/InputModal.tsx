@@ -10,7 +10,7 @@ import {
   View,
   BackHandler,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import colors from '../constants/colors';
 import imagePath from '../assets/imagePath';
 import Animated, {
@@ -19,6 +19,7 @@ import Animated, {
   withTiming,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import actions from '../redux/actions';
 
 const { width } = Dimensions.get('window');
 
@@ -29,16 +30,29 @@ const InputModal = React.memo(({
   isVisible: boolean;
   onCancel: () => void;
 }) => {
+
+  const [text, setText] = useState<string>('')
+
+  function HandleTextEnter(text : string){
+    const formattedText = text.trim()
+    setText(text)
+  }
+
+  function AddTaskHandler(){
+    if(text.length === 0) return
+    actions.AddTask(text)
+    setText('')
+    onCancel()
+  }
+
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.9);
-
   useEffect(() => {
     if (isVisible) {
       scale.value = withTiming(1)
       opacity.value = withTiming(1, { duration: 200 });
     }
   }, [isVisible]);
-
   useEffect(() => {
     const onBackPress = () => {
       if (isVisible) {
@@ -54,12 +68,13 @@ const InputModal = React.memo(({
       BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     };
   }, [isVisible, onCancel]);
-
-
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
     opacity: opacity.value,
   }));
+
+
+
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -71,7 +86,8 @@ const InputModal = React.memo(({
         <View style={styles.textInputContainer}>
           <TextInput
             multiline
-            placeholder="Enter"
+            placeholder="Enter task here..."
+            onChangeText={HandleTextEnter}
             placeholderTextColor={colors.darkBluish}
             style={styles.inputStyle}
           />
@@ -79,7 +95,7 @@ const InputModal = React.memo(({
         <View style={styles.addButtonContainer}>
           <Pressable
             android_ripple={{ color: colors.ripple }}
-            onPress={onCancel}
+            onPress={AddTaskHandler}
             style={styles.addButton}>
             <Text style={styles.addButtonText}>Add</Text>
           </Pressable>

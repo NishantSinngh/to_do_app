@@ -7,7 +7,7 @@ interface Task {
     id: string;
 }
 
-const taskInitialState: { tasks: Task[] } = { tasks: [] }
+const taskInitialState: { tasks: Task[] } = { tasks: [{ id: 'test', task: 'sdjhdshhj' }] }
 
 
 const task = createSlice({

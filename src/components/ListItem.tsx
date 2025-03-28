@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: colors.white,
+    marginRight:40,
   },
   completedTextStyle: {
     textDecorationLine: 'line-through',
