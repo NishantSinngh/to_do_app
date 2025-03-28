@@ -1,49 +1,109 @@
-import { Dimensions, Image, Keyboard, Pressable, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native'
-import React from 'react'
-import colors from '../constants/colors'
-import imagePath from '../assets/imagePath'
+import {
+  Dimensions,
+  Image,
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+  BackHandler,
+  GestureResponderEvent,
+} from 'react-native';
+import React, { useEffect } from 'react';
+import colors from '../constants/colors';
+import imagePath from '../assets/imagePath';
+import Animated, {
+  useSharedValue,
+  withSpring,
+  withTiming,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
 
-const { width } = Dimensions.get('window')
+const { width } = Dimensions.get('window');
 
-const InoputModal = () => {
+const InputModal = ({
+  isVisible,
+  onCancel,
+}: {
+  isVisible: boolean;
+  onCancel: () => void;
+}) => {
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    if (isVisible) {
+      opacity.value = withTiming(1, { duration: 300 });
+    }
+  }, [isVisible]);
+
+  useEffect(() => {
+    const onBackPress = () => {
+      if (isVisible) {
+        onCancel();
+        return true;
+      }
+      return false;
+    };
+
+    BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    };
+  }, [isVisible, onCancel]);
+
+  function handleModal(){
+    if (isVisible) {
+      onCancel();
+    }
+  }
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <View style={styles.appContainer}>
-        <Pressable
-          style={styles.crossImageContainer}>
+      <Animated.View style={[styles.appContainer, animatedStyle]}>
+        <Pressable onPress={handleModal} style={styles.crossImageContainer}>
           <Image source={imagePath.cross} />
         </Pressable>
         <Text style={styles.headerText}>Enter New Task</Text>
         <View style={styles.textInputContainer}>
           <TextInput
             multiline
-            placeholder='Enter'
+            placeholder="Enter"
             placeholderTextColor={colors.darkBluish}
             style={styles.inputStyle}
-
           />
         </View>
         <View style={styles.addButtonContainer}>
           <Pressable
             android_ripple={{ color: colors.ripple }}
-            style={styles.addButton}
-          >
+            onPress={handleModal}
+            style={styles.addButton}>
             <Text style={styles.addButtonText}>Add</Text>
           </Pressable>
         </View>
-      </View>
+      </Animated.View>
     </TouchableWithoutFeedback>
-  )
-}
+  );
+};
 
-export default InoputModal
+export default InputModal;
 
 const styles = StyleSheet.create({
   appContainer: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: colors.darkBluish,
+    zIndex:10,
   },
   headerText: {
     color: colors.white,
@@ -68,11 +128,12 @@ const styles = StyleSheet.create({
     maxHeight: 120,
     marginLeft: 20,
     color: colors.darkBluish,
-    fontSize: 15
+    fontSize: 15,
   },
   crossImageContainer: {
     alignSelf: 'flex-end',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    margin: 10,
   },
   addButtonContainer: {
     backgroundColor: colors.blue,
@@ -89,7 +150,6 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     fontSize: 16,
-    color: colors.white
-  }
-
-})
+    color: colors.white,
+  },
+});

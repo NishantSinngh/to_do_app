@@ -41,5 +41,9 @@ export default StyleSheet.create({
   addImage: {
     height: 60,
     width: 60
-  }
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
 });

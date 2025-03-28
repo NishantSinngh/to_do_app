@@ -9,6 +9,13 @@
         <item name="android:windowBackground">@null</item>
 
         <item name="android:forceDarkAllowed">false</item>
+
+        <!-- Remove Splash App Icon -->
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <!-- Fix missing Theme.SplashScreen -->

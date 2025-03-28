@@ -13,8 +13,8 @@ const App = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {/* <MainScreen /> */}
-      <InoputModal/>
+      <MainScreen />
+      {/* <InoputModal/> */}
       <StatusBar barStyle={'light-content'} translucent backgroundColor={"transparent"} />
     </View>
   )
