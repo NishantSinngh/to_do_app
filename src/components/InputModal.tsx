@@ -21,8 +21,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import actions from '../redux/actions';
 
-const { width } = Dimensions.get('window');
-
 const InputModal = React.memo(({
   isVisible,
   onCancel,
@@ -32,14 +30,19 @@ const InputModal = React.memo(({
 }) => {
 
   const [text, setText] = useState<string>('')
+  const [error, setError] = useState<boolean>(false)
 
-  function HandleTextEnter(text : string){
+  function HandleTextEnter(text: string) {
     const formattedText = text.trim()
-    setText(text)
+    setText(formattedText)
   }
 
-  function AddTaskHandler(){
-    if(text.length === 0) return
+  function AddTaskHandler() {
+    const isError = Boolean(text === '')
+    if (isError) {
+      setError(true)
+      return
+    }
     actions.AddTask(text)
     setText('')
     onCancel()
@@ -50,7 +53,7 @@ const InputModal = React.memo(({
   useEffect(() => {
     if (isVisible) {
       scale.value = withTiming(1)
-      opacity.value = withTiming(1, { duration: 200 });
+      opacity.value = withTiming(1, { duration: 10 });
     }
   }, [isVisible]);
   useEffect(() => {
@@ -92,6 +95,7 @@ const InputModal = React.memo(({
             style={styles.inputStyle}
           />
         </View>
+        {error && <Text style={styles.errorText}>Please check your entered text</Text>}
         <View style={styles.addButtonContainer}>
           <Pressable
             android_ripple={{ color: colors.ripple }}
@@ -151,7 +155,7 @@ const styles = StyleSheet.create({
   },
   addButtonContainer: {
     backgroundColor: colors.blue,
-    marginTop: 200,
+    marginTop: 160,
     overflow: 'hidden',
     borderRadius: 10,
     elevation: 4,
@@ -165,5 +169,11 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 16,
     color: colors.white,
+  },
+  errorText: {
+    color: colors.red,
+    alignSelf: 'flex-start',
+    marginTop: 5,
+    marginLeft: 20,
   },
 });
