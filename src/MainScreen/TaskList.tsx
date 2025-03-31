@@ -3,7 +3,6 @@ import React, { useState, useCallback, useRef } from 'react';
 import ListItem from '../components/ListItem';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
-import actions from '../redux/actions';
 
 const { width } = Dimensions.get('window');
 
@@ -11,10 +10,6 @@ const TaskList = React.memo(() => {
 
     const tasks = useSelector((state: any) => state.task.tasks)
     const viewableItems = useSharedValue<ViewToken[]>([]);
-
-    const handleCompleteCheck = useCallback((id: string, status: boolean) => {
-        actions.UpdateTaskStatus(id, status);
-    }, []);
 
     const throttledRef = useRef<NodeJS.Timeout | null>(null);
     const onViewableItemsChanged = useCallback(({ viewableItems: vItems }: { viewableItems: ViewToken[] }) => {
@@ -42,7 +37,6 @@ const TaskList = React.memo(() => {
                 renderItem={({ item, index }) => (
                     <ListItem
                         item={item}
-                        setCompleted={handleCompleteCheck}
                         viewableItems={viewableItems}
                     />
                 )}

@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import colors from '../constants/colors';
 import imagePath from '../assets/imagePath';
 import Reanimated, {
@@ -10,15 +10,18 @@ import Reanimated, {
   withSequence,
 } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
+import actions from '../redux/actions';
 
 const { width } = Dimensions.get('window');
 
 const ListItem = React.memo(({
   item,
-  setCompleted,
   viewableItems
 }: ListItemProps) => {
-  const taskList = useSelector((state: any) => state.task.tasks)
+
+  const handleCompleteCheck = useCallback((id: string, status: boolean) => {
+    actions.UpdateTaskStatus(id, status);
+}, []);
 
   const scaleAnim = useSharedValue(0.1);
   const viewTranslate = useSharedValue(0);
@@ -55,7 +58,7 @@ const ListItem = React.memo(({
       <Pressable
         android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
         style={styles.button}
-        onPress={() => setTimeout(() => setCompleted(item.id, !item.isCompleted), 100)
+        onPress={() => setTimeout(() => handleCompleteCheck(item.id, !item.isCompleted), 100)
         }
       >
         {!item.isCompleted ? (
