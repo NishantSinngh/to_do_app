@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice } from "@reduxjs/toolkit"
 
 
@@ -14,8 +15,12 @@ const task = createSlice({
     name: "task",
     initialState: taskInitialState,
     reducers: {
+        taskList(state, action) {
+            state.tasks = action.payload
+        },
         addTask(state, action) {
             state.tasks = [...state.tasks, { task: action.payload, id: Math.random().toString() }]
+            AsyncStorage.setItem('tasks', JSON.stringify(state.tasks))
         },
         deleteTask(state, action) {
             state.tasks = state.tasks.filter((task) => task.id !== action.payload)
@@ -28,4 +33,4 @@ const task = createSlice({
 
 
 export default task.reducer
-export const { addTask, deleteTask, updateTask } = task.actions
+export const { addTask, deleteTask, updateTask,taskList } = task.actions
