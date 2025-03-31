@@ -1,7 +1,5 @@
 interface ListItemProps {
-  item: { id: number; task: string };
-  index: number;
-  completed: Set<number>;
-  setCompleted: (item: { id: number; task: string }) => void;
+  item: Task;
+  setCompleted: (id:string ,status:boolean) => void;
   viewableItems: SharedValue<ViewToken[]>;
 }

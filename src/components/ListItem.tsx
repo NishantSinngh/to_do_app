@@ -8,21 +8,21 @@ import Reanimated, {
   withTiming,
   withSpring,
   withSequence,
-  SharedValue
 } from 'react-native-reanimated';
+import { useSelector } from 'react-redux';
 
 const { width } = Dimensions.get('window');
 
 const ListItem = React.memo(({
   item,
-  index,
-  completed,
   setCompleted,
   viewableItems
 }: ListItemProps) => {
-  const isCompleted = completed.has(item.id);
+  const taskList = useSelector((state: any) => state.task.tasks)
+
   const scaleAnim = useSharedValue(0.1);
   const viewTranslate = useSharedValue(0);
+  console.log(item);
 
   const rStyle = useAnimatedStyle(() => {
     const isVisible = Boolean(
@@ -35,7 +35,7 @@ const ListItem = React.memo(({
   }, []);
 
   useEffect(() => {
-    if (isCompleted) {
+    if (item.isCompleted) {
       scaleAnim.value = withSpring(1);
       viewTranslate.value = withSequence(
         withTiming(-10, { duration: 50 }),
@@ -46,18 +46,19 @@ const ListItem = React.memo(({
       scaleAnim.value = 0;
       viewTranslate.value = 0;
     }
-  }, [isCompleted, scaleAnim, viewTranslate]);
+  }, [item.isCompleted, scaleAnim, viewTranslate]);
 
-  
+
 
   return (
     <Reanimated.View style={[styles.container, { transform: [{ translateX: viewTranslate }] }, rStyle]}>
       <Pressable
         android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
         style={styles.button}
-        onPress={() => setTimeout(() => setCompleted(item), 100)}
+        onPress={() => setTimeout(() => setCompleted(item.id, !item.isCompleted), 100)
+        }
       >
-        {!isCompleted ? (
+        {!item.isCompleted ? (
           <View style={styles.checkBox} />
         ) : (
           <Reanimated.Image
@@ -65,7 +66,7 @@ const ListItem = React.memo(({
             style={[styles.checkBoxImage, { transform: [{ scale: scaleAnim }] }]}
           />
         )}
-        <Text style={[styles.textStyle, isCompleted && styles.completedTextStyle]}>
+        <Text style={[styles.textStyle, item.isCompleted && styles.completedTextStyle]}>
           {item.task}
         </Text>
       </Pressable>
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     color: colors.white,
-    marginRight:40,
+    marginRight: 40,
   },
   completedTextStyle: {
     textDecorationLine: 'line-through',

@@ -20,8 +20,6 @@ const App = () => {
       if (savedTask) {
         const tasks = JSON.parse(savedTask);
         dispatch(taskList(tasks));
-        console.log(tasks);
-        
       }
     } catch (error) {
       console.error("Error retrieving saved tasks:", error);
