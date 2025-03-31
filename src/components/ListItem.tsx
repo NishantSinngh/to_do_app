@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken, Image, BackHandler,Vibration } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken, Image, BackHandler, Vibration } from 'react-native';
 import React, { useCallback, useEffect, useState } from 'react';
 import colors from '../constants/colors';
 import imagePath from '../assets/imagePath';
@@ -8,6 +8,8 @@ import Reanimated, {
   withTiming,
   withSpring,
   withSequence,
+  withRepeat,
+  Easing,
 } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 import actions from '../redux/actions';
@@ -26,10 +28,12 @@ const ListItem = React.memo(({
   const handleCompleteCheck = useCallback((id: string, status: boolean) => {
     actions.UpdateTaskStatus(id, status);
   }, []);
-  function handleIconVisibility() {
-    Vibration.vibrate(500)
-    setIconsVisible(prev => !prev)
-  }
+
+  const handleIconVisibility = useCallback(() => {
+    if (!iconsVisible) Vibration.vibrate(60)
+    setIconsVisible((prev) => !prev);
+  }, [iconsVisible]);
+
   function DeleteTaskHandler() {
     actions.DeleteTask(item.id)
     handleIconVisibility()
@@ -51,7 +55,28 @@ const ListItem = React.memo(({
     };
   }, [iconsVisible, handleIconVisibility]);
 
+  const rotation = useSharedValue(-5);
+  const iconStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ rotate: `${rotation.value}deg` }],
+    };
+  });
 
+
+  useEffect(() => {
+    if (iconsVisible) {
+      rotation.value = withRepeat(
+        withTiming(5, {
+          duration: 100,
+          easing: Easing.linear,
+        }),
+        -1,
+        true
+      );
+    } else {
+      rotation.value = withTiming(0, { duration: 100 });
+    }
+  }, [iconsVisible, rotation]);
 
   const scaleAnim = useSharedValue(0.1);
   const viewTranslate = useSharedValue(0);
@@ -67,6 +92,7 @@ const ListItem = React.memo(({
 
   useEffect(() => {
     if (item.isCompleted) {
+      Vibration.vibrate(40)
       scaleAnim.value = withSpring(1);
       viewTranslate.value = withSequence(
         withTiming(-10, { duration: 50 }),
@@ -105,10 +131,10 @@ const ListItem = React.memo(({
       </Reanimated.View>
       {iconsVisible && <View style={styles.iconContainer}>
         <Pressable>
-          <Image source={imagePath.edit} style={styles.icons} />
+          <Reanimated.Image source={imagePath.edit} style={[styles.icons, iconStyle]} />
         </Pressable>
         <Pressable onPress={DeleteTaskHandler}>
-          <Image source={imagePath.delete} style={styles.icons} />
+          <Reanimated.Image source={imagePath.delete} style={[styles.icons, iconStyle]} />
         </Pressable>
       </View >}
     </>

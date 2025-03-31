@@ -1,5 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 import colors from '../constants/colors';
+
+const { width, height } = Dimensions.get('window')
 
 export default StyleSheet.create({
   appContainer: {
@@ -42,4 +44,10 @@ export default StyleSheet.create({
     height: 60,
     width: 60
   },
+  loader: {
+    width: width,
+    height: height-100,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });

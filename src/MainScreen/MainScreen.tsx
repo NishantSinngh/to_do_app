@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, Pressable, Image, StyleSheet } from 'react-native';
+import { View, Text, ImageBackground, Pressable, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import React, { useState } from 'react';
 import mainScreenStyle from './mainScreen.style';
 import imagePath from '../assets/imagePath';
@@ -6,7 +6,7 @@ import TaskList from './TaskList';
 import colors from '../constants/colors';
 import InputModal from '../components/InputModal';
 
-const MainScreen = () => {
+const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   function handleModal() {
@@ -30,7 +30,7 @@ const MainScreen = () => {
             <Text style={mainScreenStyle.text}>Tasks</Text>
           </View>
           <View style={{ flex: 1 }}>
-            <TaskList />
+            {taskLoading ? <ActivityIndicator size={60} color={colors.blue} style={mainScreenStyle.loader} /> : <TaskList />}
           </View>
           <View style={mainScreenStyle.footer}>
             <Pressable
