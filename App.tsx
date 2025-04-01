@@ -1,4 +1,4 @@
-import { StatusBar, View, Alert, Platform, ActivityIndicator } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MainScreen } from './src';
 import BootSplash from "react-native-bootsplash";

@@ -1,4 +1,4 @@
-import { View, Text, ImageBackground, Pressable, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, ImageBackground, Pressable, Image, ActivityIndicator } from 'react-native';
 import React, { useState } from 'react';
 import mainScreenStyle from './mainScreen.style';
 import imagePath from '../assets/imagePath';

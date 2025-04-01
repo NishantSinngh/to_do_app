@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken, Image, BackHandler, Vibration, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken, BackHandler, Vibration, TextInput } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import colors from '../constants/colors';
 import imagePath from '../assets/imagePath';
@@ -11,7 +11,6 @@ import Reanimated, {
   withRepeat,
   Easing,
 } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 import actions from '../redux/actions';
 
 const { width } = Dimensions.get('window');

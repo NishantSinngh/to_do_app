@@ -1,5 +1,4 @@
 import {
-  Dimensions,
   Image,
   Keyboard,
   Pressable,
@@ -15,7 +14,6 @@ import colors from '../constants/colors';
 import imagePath from '../assets/imagePath';
 import Animated, {
   useSharedValue,
-  withSpring,
   withTiming,
   useAnimatedStyle,
 } from 'react-native-reanimated';

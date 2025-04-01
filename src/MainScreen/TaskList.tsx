@@ -1,5 +1,5 @@
 import { View, StyleSheet, FlatList, ViewToken, Text, Dimensions } from 'react-native';
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import ListItem from '../components/ListItem';
 import { useSharedValue } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
