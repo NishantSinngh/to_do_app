@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken, Image, BackHandler, Vibration } from 'react-native';
-import React, { useCallback, useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken, Image, BackHandler, Vibration, TextInput } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import colors from '../constants/colors';
 import imagePath from '../assets/imagePath';
 import Reanimated, {
@@ -21,7 +21,38 @@ const ListItem = React.memo(({
   viewableItems
 }: ListItemProps) => {
 
-  console.log(item);
+  // console.log(item);
+  const textRef = useRef(item.task);
+  const textInputRef = useRef(null);
+  const [error, setError] = useState<boolean>(false)
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+  function HandleTextEnter(text: string) {
+    textRef.current = text;
+    console.log(textRef.current);
+
+  }
+
+  function UpdateTaskHandler() {
+    const trimmedText = textRef.current.trim();
+    if (!trimmedText) {
+      setError(true);
+      return;
+    }
+    if (trimmedText === item.task) {
+      setIsEditing(false);
+      setIconsVisible(false);
+      setError(false)
+      return;
+    }
+
+    actions.UpdateTask(item.id, trimmedText).finally(() => {
+      setIsEditing(false);
+      setIconsVisible(false);
+      setError(false)
+    });
+
+    textRef.current = "";
+  }
 
   const [iconsVisible, setIconsVisible] = useState(false)
 
@@ -124,13 +155,24 @@ const ListItem = React.memo(({
               style={[styles.checkBoxImage, { transform: [{ scale: scaleAnim }] }]}
             />
           )}
-          <Text style={[styles.textStyle, item.isCompleted && styles.completedTextStyle]}>
+
+          {!isEditing ? <Text style={[styles.textStyle, item.isCompleted && styles.completedTextStyle]}>
             {item.task}
           </Text>
+            :
+            <TextInput
+              ref={textInputRef}
+              style={styles.textInputStyle}
+              defaultValue={item.task}
+              onChangeText={HandleTextEnter}
+              onSubmitEditing={UpdateTaskHandler}
+            // multiline
+            />}
         </Pressable>
       </Reanimated.View>
+      {error && <Text style={styles.errorText}>Please check your entered text</Text>}
       {iconsVisible && <View style={styles.iconContainer}>
-        <Pressable>
+        <Pressable onPress={() => setIsEditing(true)}>
           <Reanimated.Image source={imagePath.edit} style={[styles.icons, iconStyle]} />
         </Pressable>
         <Pressable onPress={DeleteTaskHandler}>
@@ -155,6 +197,13 @@ const styles = StyleSheet.create({
   textStyle: {
     color: colors.white,
     marginRight: 40,
+  },
+  textInputStyle: {
+    flex: 1,
+    color: colors.white,
+    zIndex: 4,
+    backgroundColor: colors.ripple,
+    borderRadius: 10,
   },
   completedTextStyle: {
     textDecorationLine: 'line-through',
@@ -191,6 +240,11 @@ const styles = StyleSheet.create({
     width: 30,
     marginHorizontal: 5,
     marginBottom: 8,
+  },
+  errorText: {
+    color: colors.red,
+    alignSelf: 'center',
+    marginBottom: 5,
   },
 });
 
