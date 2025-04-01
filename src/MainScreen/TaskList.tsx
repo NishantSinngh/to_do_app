@@ -18,7 +18,6 @@ const TaskList = React.memo(() => {
             throttledRef.current = null;
         }, 50);
     }, [viewableItems]);
-
     return (
         <View style={styles.listContainer}>
             <FlatList

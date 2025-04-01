@@ -7,6 +7,7 @@ import store from './src/redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { taskList } from './src/redux/reducers/task';
 import colors from './src/constants/colors';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
 
@@ -36,12 +37,14 @@ const App = () => {
 
 
   return (
-    <Provider store={store}>
-      <View style={{ flex: 1 }}>
-        <MainScreen taskLoading={tasksLoading} />
-        <StatusBar barStyle={'light-content'} translucent backgroundColor={"transparent"} />
-      </View>
-    </Provider>
+    <GestureHandlerRootView>
+      <Provider store={store}>
+        <View style={{ flex: 1 }}>
+          <MainScreen taskLoading={tasksLoading} />
+          <StatusBar barStyle={'light-content'} translucent backgroundColor={"transparent"} />
+        </View>
+      </Provider>
+    </GestureHandlerRootView>
   );
 };
 

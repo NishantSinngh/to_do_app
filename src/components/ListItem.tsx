@@ -8,10 +8,11 @@ import Reanimated, {
   withTiming,
   withSpring,
   withSequence,
-  withRepeat,
-  Easing,
+  runOnJS,
+  withDelay,
 } from 'react-native-reanimated';
 import actions from '../redux/actions';
+import { Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler, Swipeable } from 'react-native-gesture-handler';
 
 const { width } = Dimensions.get('window');
 
@@ -39,74 +40,24 @@ const ListItem = React.memo(({
     }
     if (trimmedText === item.task) {
       setIsEditing(false);
-      setIconsVisible(false);
       setError(false)
       return;
     }
 
     actions.UpdateTask(item.id, trimmedText).finally(() => {
       setIsEditing(false);
-      setIconsVisible(false);
       setError(false)
     });
-
     textRef.current = "";
   }
-
-  const [iconsVisible, setIconsVisible] = useState(false)
 
   const handleCompleteCheck = useCallback((id: string, status: boolean) => {
     actions.UpdateTaskStatus(id, status);
   }, []);
-
-  const handleIconVisibility = useCallback(() => {
-    if (!iconsVisible) Vibration.vibrate(60)
-    setIconsVisible((prev) => !prev);
-  }, [iconsVisible]);
-
   function DeleteTaskHandler() {
     actions.DeleteTask(item.id)
-    handleIconVisibility()
   }
 
-  useEffect(() => {
-    const onBackPress = () => {
-      if (iconsVisible) {
-        handleIconVisibility();
-        return true;
-      }
-      return false;
-    };
-
-    BackHandler.addEventListener('hardwareBackPress', onBackPress);
-
-    return () => {
-      BackHandler.removeEventListener('hardwareBackPress', onBackPress);
-    };
-  }, [iconsVisible, handleIconVisibility]);
-
-  const rotation = useSharedValue(-5);
-  const iconStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${rotation.value}deg` }],
-    };
-  });
-
-
-  useEffect(() => {
-    if (iconsVisible) {
-      rotation.value = withRepeat(
-        withTiming(5, {
-          duration: 100,
-          easing: Easing.linear,
-        }),
-        -1,
-        true
-      );
-    } else {
-      rotation.value = withTiming(0, { duration: 100 });
-    }
-  }, [iconsVisible, rotation]);
 
   const scaleAnim = useSharedValue(0.1);
   const viewTranslate = useSharedValue(0);
@@ -135,51 +86,77 @@ const ListItem = React.memo(({
     }
   }, [item.isCompleted, scaleAnim, viewTranslate]);
 
+  const translateX = useSharedValue(0);
 
+  const swipeGesture = Gesture.Pan()
+    .activeOffsetX([-20, 20])
+    .failOffsetY([-20, 20])
+    .onUpdate((event) => {
+      translateX.value = event.translationX;
+    })
+    .onFinalize(() => {
+      translateX.value = withDelay(2000, withTiming(0, { duration: 300 }));
+    })
 
+  const iconStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withTiming(translateX.value < -40 ? 1 : 0) }],
+    };
+  });
+  const deleteButtonStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateX: withTiming(translateX.value < 0 ? -50 : 0),
+        },
+      ],
+    };
+  });
   return (
-    <>
-      <Reanimated.View style={[styles.container, { transform: [{ translateX: viewTranslate }] }, rStyle]}>
-        <Pressable
-          android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
-          style={styles.button}
-          onPress={() => setTimeout(() => handleCompleteCheck(item.id, !item.isCompleted), 100)}
-          onLongPress={handleIconVisibility}
-        >
-          {!item.isCompleted ? (
-            <View style={styles.checkBox} />
-          ) : (
-            <Reanimated.Image
-              source={imagePath.checkBox}
-              style={[styles.checkBoxImage, { transform: [{ scale: scaleAnim }] }]}
-            />
-          )}
+    <GestureHandlerRootView>
+      <GestureDetector gesture={swipeGesture}>
+        <Reanimated.View style={[styles.container, { transform: [{ translateX: viewTranslate }] }, rStyle, deleteButtonStyle]}>
+          <Pressable
+            android_ripple={{ color: 'rgba(255,255,255,0.1)' }}
+            style={styles.button}
+            onPress={() => setTimeout(() => handleCompleteCheck(item.id, !item.isCompleted), 100)}
+            onLongPress={() => {
+              Vibration.vibrate(50)
+              setIsEditing(true)
+            }}
+          >
+            {!item.isCompleted ? (
+              <View style={styles.checkBox} />
+            ) : (
+              <Reanimated.Image
+                source={imagePath.checkBox}
+                style={[styles.checkBoxImage, { transform: [{ scale: scaleAnim }] }]}
+              />
+            )}
 
-          {!isEditing ? <Text style={[styles.textStyle, item.isCompleted && styles.completedTextStyle]}>
-            {item.task}
-          </Text>
-            :
-            <TextInput
-              ref={textInputRef}
-              style={styles.textInputStyle}
-              defaultValue={item.task}
-              onChangeText={HandleTextEnter}
-              onSubmitEditing={UpdateTaskHandler}
-              autoFocus={true}
-            // multiline
-            />}
-        </Pressable>
-      </Reanimated.View>
-      {error && <Text style={styles.errorText}>Please check your entered text</Text>}
-      {iconsVisible && <View style={styles.iconContainer}>
-        <Pressable onPress={() => setIsEditing(true)}>
-          <Reanimated.Image source={imagePath.edit} style={[styles.icons, iconStyle]} />
-        </Pressable>
+            {!isEditing ? <Text style={[styles.textStyle, item.isCompleted && styles.completedTextStyle]}>
+              {item.task}
+            </Text>
+              :
+              <TextInput
+                ref={textInputRef}
+                style={styles.textInputStyle}
+                defaultValue={item.task}
+                onChangeText={HandleTextEnter}
+                onSubmitEditing={UpdateTaskHandler}
+                autoFocus={true}
+              // multiline
+              />}
+          </Pressable>
+        </Reanimated.View>
+      </GestureDetector>
+      <View style={styles.iconContainer}>
         <Pressable onPress={DeleteTaskHandler}>
           <Reanimated.Image source={imagePath.delete} style={[styles.icons, iconStyle]} />
         </Pressable>
-      </View >}
-    </>
+      </View >
+      {error && <Text style={styles.errorText}>Please check your entered text</Text>}
+    </GestureHandlerRootView>
   );
 });
 
@@ -230,10 +207,13 @@ const styles = StyleSheet.create({
     borderColor: colors.blue,
   },
   iconContainer: {
-    flexDirection: 'row',
-    marginHorizontal: 20,
+    flex: 1,
+    position: 'absolute',
+    width: "100%",
+    height: "100%",
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'flex-end',
+    paddingRight: 20,
   },
   icons: {
     height: 30,
