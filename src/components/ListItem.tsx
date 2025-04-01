@@ -166,6 +166,7 @@ const ListItem = React.memo(({
               defaultValue={item.task}
               onChangeText={HandleTextEnter}
               onSubmitEditing={UpdateTaskHandler}
+              autoFocus={true}
             // multiline
             />}
         </Pressable>
