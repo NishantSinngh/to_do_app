@@ -7,8 +7,8 @@ interface Task {
     isCompleted: boolean;
 }
 
-const taskInitialState: { tasks: Task[] } = { 
-  tasks: [] 
+const taskInitialState: { tasks: Task[] } = {
+    tasks: []
 };
 
 const task = createSlice({
@@ -20,8 +20,8 @@ const task = createSlice({
         },
         addTask(state, action) {
             state.tasks = [
-                ...state.tasks, 
-                { task: action.payload, id: Math.random().toString(), isCompleted: false }
+                { task: action.payload, id: Math.random().toString(), isCompleted: false },
+                ...state.tasks
             ];
             AsyncStorage.setItem('tasks', JSON.stringify(state.tasks));
         },
@@ -31,9 +31,9 @@ const task = createSlice({
         },
         updateTask(state, action) {
             state.tasks = state.tasks.map((task: Task) =>
-                task.id === action.payload.id 
-                ? { ...task, task: action.payload.editedText } 
-                : task
+                task.id === action.payload.id
+                    ? { ...task, task: action.payload.editedText }
+                    : task
             );
             AsyncStorage.setItem('tasks', JSON.stringify(state.tasks));
         },

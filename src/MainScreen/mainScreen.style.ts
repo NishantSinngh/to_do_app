@@ -49,5 +49,13 @@ export default StyleSheet.create({
     height: height-100,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  overlay:{
+    position:'absolute',
+    top:0,
+    bottom:0,
+    left:0,
+    right:0,
+    backgroundColor:colors.overlay
   }
 });

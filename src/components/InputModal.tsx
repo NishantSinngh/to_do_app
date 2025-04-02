@@ -11,13 +11,13 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import colors from '../constants/colors';
-import imagePath from '../assets/imagePath';
 import Animated, {
   useSharedValue,
   withTiming,
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import actions from '../redux/actions';
+import imagePath from '../assets/imagePath';
 
 const InputModal = React.memo(({
   isVisible,
@@ -47,13 +47,14 @@ const InputModal = React.memo(({
   }
 
   const opacity = useSharedValue(0);
-  const scale = useSharedValue(0.9);
+  const modalTranslateY = useSharedValue(530);
   useEffect(() => {
     if (isVisible) {
-      scale.value = withTiming(1)
-      opacity.value = withTiming(1, { duration: 10 });
+      modalTranslateY.value = withTiming(0, { duration: 500 })
+      opacity.value = withTiming(1, { duration: 100 });
     }
   }, [isVisible]);
+
   useEffect(() => {
     const onBackPress = () => {
       if (isVisible) {
@@ -69,8 +70,9 @@ const InputModal = React.memo(({
       BackHandler.removeEventListener('hardwareBackPress', onBackPress);
     };
   }, [isVisible, onCancel]);
+
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
+    transform: [{ translateY: modalTranslateY.value }],
     opacity: opacity.value,
   }));
 
@@ -80,30 +82,31 @@ const InputModal = React.memo(({
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Animated.View style={[styles.appContainer, animatedStyle]}>
-        <Pressable onPress={onCancel} style={styles.crossImageContainer}>
-          <Image source={imagePath.cross} />
-        </Pressable>
+        <View style={styles.rectangle} />
         <Text style={styles.headerText}>Enter New Task</Text>
-        <View style={styles.textInputContainer}>
-          <TextInput
-            multiline
-            placeholder="Enter task here..."
-            onChangeText={HandleTextEnter}
-            placeholderTextColor={colors.darkBluish}
-            style={styles.inputStyle}
-          />
+        <View style={{ flexDirection: 'row' }}>
+          <View style={styles.textInputContainer}>
+            <TextInput
+              multiline
+              placeholder="Enter task here..."
+              onChangeText={HandleTextEnter}
+              placeholderTextColor={colors.darkBluish}
+              style={styles.inputStyle}
+              autoFocus={true}
+            />
+          </View>
+          <View style={styles.addButtonContainer}>
+            <Pressable
+              android_ripple={{ color: colors.ripple }}
+              onPress={AddTaskHandler}
+              style={styles.addButton}>
+              <Image source={imagePath.send} style={styles.sendIcon} />
+            </Pressable>
+          </View>
         </View>
         {error && <Text style={styles.errorText}>Please check your entered text</Text>}
-        <View style={styles.addButtonContainer}>
-          <Pressable
-            android_ripple={{ color: colors.ripple }}
-            onPress={AddTaskHandler}
-            style={styles.addButton}>
-            <Text style={styles.addButtonText}>Add</Text>
-          </Pressable>
-        </View>
       </Animated.View>
-    </TouchableWithoutFeedback>
+    </TouchableWithoutFeedback >
   );
 });
 
@@ -112,10 +115,12 @@ export default InputModal;
 const styles = StyleSheet.create({
   appContainer: {
     position: 'absolute',
-    top: 0,
+    top: 250,
     left: 0,
     right: 0,
     bottom: 0,
+    borderTopStartRadius: 20,
+    borderTopEndRadius: 20,
     justifyContent: 'flex-start',
     alignItems: 'center',
     backgroundColor: colors.darkBluish,
@@ -125,10 +130,11 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 26,
     fontWeight: 'bold',
-    marginTop: 150,
-    marginBottom: 50,
+    marginTop: 80,
+    marginBottom: 40,
   },
   textInputContainer: {
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignSelf: 'center',
@@ -141,32 +147,23 @@ const styles = StyleSheet.create({
   inputStyle: {
     flex: 1,
     minHeight: 60,
-    maxHeight: 120,
+    maxHeight: 100,
     marginLeft: 20,
     color: colors.darkBluish,
     fontSize: 15,
   },
-  crossImageContainer: {
-    alignSelf: 'flex-end',
-    overflow: 'hidden',
-    margin: 10,
-  },
   addButtonContainer: {
-    backgroundColor: colors.blue,
-    marginTop: 160,
+    backgroundColor: colors.darkBluish,
     overflow: 'hidden',
-    borderRadius: 10,
-    elevation: 4,
-  },
-  addButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    width: 153,
-    height: 63,
+    borderRadius: 30,
+    elevation: 4,
+    flex: 0.2,
+    marginRight: 5,
   },
-  addButtonText: {
-    fontSize: 16,
-    color: colors.white,
+  addButton: {
+    padding: 17,
   },
   errorText: {
     color: colors.red,
@@ -174,4 +171,19 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginLeft: 20,
   },
+  rectangle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 5,
+    maxHeight: 5,
+    minWidth: 50,
+    maxWidth: 50,
+    backgroundColor: colors.opacity,
+    marginTop: 10,
+    borderRadius: 20,
+  },
+  sendIcon: {
+    height: 26,
+    width: 28,
+  }
 });

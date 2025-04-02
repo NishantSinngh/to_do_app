@@ -5,4 +5,5 @@ export default {
     cross: require('./images/cross.png'),
     delete: require('./images/delete.png'),
     edit: require('./images/edit.png'),
+    send: require('./images/send.png'),
 }

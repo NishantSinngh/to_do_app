@@ -5,5 +5,7 @@ export default {
     darkBluish:'#353F54',
     blue:'#3C9EEA',
     ripple:'rgba(255,255,255,0.1)',
+    opacity:'rgba(255,255,255,0.3)',
+    overlay:'rgba(0,0,0,0.4)',
     red:'red',
 }

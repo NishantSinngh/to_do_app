@@ -43,7 +43,7 @@ const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
         </View>
       </View>
 
-      {/* {isVisible && <View style={mainScreenStyle.overlay} />} */}
+      {isVisible && <View style={mainScreenStyle.overlay} />}
 
       {isVisible && <InputModal isVisible={isVisible} onCancel={handleModal} />}
     </>
