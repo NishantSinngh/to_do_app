@@ -55,6 +55,7 @@ const ListItem = React.memo(({
     actions.UpdateTaskStatus(id, status);
   }, []);
   function DeleteTaskHandler() {
+    Vibration.vibrate(100)
     actions.DeleteTask(item.id)
   }
 

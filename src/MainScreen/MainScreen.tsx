@@ -1,36 +1,26 @@
-import { View, Text, ImageBackground, Pressable, Image, ActivityIndicator } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { View, Text, ImageBackground, Pressable, Image, ActivityIndicator, TouchableWithoutFeedback } from 'react-native';
+import React, { useState } from 'react';
 import mainScreenStyle from './mainScreen.style';
 import imagePath from '../assets/imagePath';
 import TaskList from './TaskList';
 import colors from '../constants/colors';
 import InputModal from '../components/InputModal';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Overlay from '../components/Overlay';
 
 const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
 
   function handleModal() {
+
     if (isVisible) {
       setIsVisible(false)
     } else {
       setIsVisible(true)
     }
   }
-  const backgroundColor = useSharedValue(colors.opacity0);
-  useEffect(() => {
-    if (isVisible) {
-      backgroundColor.value = withTiming(colors.overlay, { duration: 500 })
-    } else {
-      backgroundColor.value = withTiming(colors.opacity0, { duration: 1000 })
-    }
-  }, [isVisible]);
-  const animatedStyle = useAnimatedStyle(() => ({
-    backgroundColor: backgroundColor.value
-  }));
 
   return (
-    <>
+    <React.Fragment>
       <View style={mainScreenStyle.appContainer}>
         <ImageBackground
           source={imagePath.appBackground}
@@ -55,10 +45,10 @@ const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
         </View>
       </View>
 
-      {isVisible && <Animated.View style={[mainScreenStyle.overlay, animatedStyle]} />}
+      {isVisible && <Overlay isVisible={isVisible} onPress={handleModal} />}
 
       {isVisible && <InputModal isVisible={isVisible} onCancel={handleModal} />}
-    </>
+    </React.Fragment>
   );
 };
 

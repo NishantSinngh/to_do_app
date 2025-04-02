@@ -50,15 +50,22 @@ const InputModal = React.memo(({
   const modalTranslateY = useSharedValue(530);
   useEffect(() => {
     if (isVisible) {
-      modalTranslateY.value = withTiming(0, { duration: 500 })
+      modalTranslateY.value = withTiming(0, { duration: 400 })
       opacity.value = withTiming(1, { duration: 100 });
     }
   }, [isVisible]);
 
+  function ClosingModal() {
+    modalTranslateY.value = withTiming(530, { duration: 300 })
+    opacity.value = withTiming(0, { duration: 300 });
+    setTimeout(() => {
+      onCancel();
+    }, 150);
+  }
   useEffect(() => {
     const onBackPress = () => {
       if (isVisible) {
-        onCancel();
+        ClosingModal()
         return true;
       }
       return false;
@@ -75,9 +82,6 @@ const InputModal = React.memo(({
     transform: [{ translateY: modalTranslateY.value }],
     opacity: opacity.value,
   }));
-
-
-
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -106,7 +110,7 @@ const InputModal = React.memo(({
         </View>
         {error && <Text style={styles.errorText}>Please check your entered text</Text>}
       </Animated.View>
-    </TouchableWithoutFeedback >
+    </TouchableWithoutFeedback>
   );
 });
 
@@ -119,19 +123,6 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    borderTopStartRadius: 20,
-    borderTopEndRadius: 20,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: colors.darkBluish,
-    zIndex: 10,
-  },
-  blankContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: "60%",
     borderTopStartRadius: 20,
     borderTopEndRadius: 20,
     justifyContent: 'flex-start',
@@ -194,7 +185,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.opacity,
     marginTop: 10,
     borderRadius: 20,
-    elevation:2,
+    elevation: 2,
   },
   sendIcon: {
     height: 26,
