@@ -115,10 +115,23 @@ export default InputModal;
 const styles = StyleSheet.create({
   appContainer: {
     position: 'absolute',
-    top: 250,
+    top: "40%",
     left: 0,
     right: 0,
     bottom: 0,
+    borderTopStartRadius: 20,
+    borderTopEndRadius: 20,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: colors.darkBluish,
+    zIndex: 10,
+  },
+  blankContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: "60%",
     borderTopStartRadius: 20,
     borderTopEndRadius: 20,
     justifyContent: 'flex-start',
@@ -130,7 +143,7 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 26,
     fontWeight: 'bold',
-    marginTop: 80,
+    marginTop: 30,
     marginBottom: 40,
   },
   textInputContainer: {
@@ -181,6 +194,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.opacity,
     marginTop: 10,
     borderRadius: 20,
+    elevation:2,
   },
   sendIcon: {
     height: 26,

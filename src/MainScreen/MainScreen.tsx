@@ -1,10 +1,11 @@
 import { View, Text, ImageBackground, Pressable, Image, ActivityIndicator } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import mainScreenStyle from './mainScreen.style';
 import imagePath from '../assets/imagePath';
 import TaskList from './TaskList';
 import colors from '../constants/colors';
 import InputModal from '../components/InputModal';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -16,6 +17,17 @@ const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
       setIsVisible(true)
     }
   }
+  const backgroundColor = useSharedValue(colors.opacity0);
+  useEffect(() => {
+    if (isVisible) {
+      backgroundColor.value = withTiming(colors.overlay, { duration: 500 })
+    } else {
+      backgroundColor.value = withTiming(colors.opacity0, { duration: 1000 })
+    }
+  }, [isVisible]);
+  const animatedStyle = useAnimatedStyle(() => ({
+    backgroundColor: backgroundColor.value
+  }));
 
   return (
     <>
@@ -43,7 +55,7 @@ const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
         </View>
       </View>
 
-      {isVisible && <View style={mainScreenStyle.overlay} />}
+      {isVisible && <Animated.View style={[mainScreenStyle.overlay, animatedStyle]} />}
 
       {isVisible && <InputModal isVisible={isVisible} onCancel={handleModal} />}
     </>
