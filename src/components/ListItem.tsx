@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken, BackHandler, Vibration, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Pressable, ViewToken, Vibration, TextInput } from 'react-native';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import colors from '../constants/colors';
 import imagePath from '../assets/imagePath';
@@ -12,7 +12,7 @@ import Reanimated, {
   withDelay,
 } from 'react-native-reanimated';
 import actions from '../redux/actions';
-import { Gesture, GestureDetector, GestureHandlerRootView, PanGestureHandler, Swipeable } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const { width } = Dimensions.get('window');
 
@@ -59,6 +59,12 @@ const ListItem = React.memo(({
   }
 
 
+
+  /* 💥💥💥─────────────────────────────────────────────────────────────────────────────💥💥💥 */
+  /*                              ⚡⚡⚡✨  ANIMATIONS  ✨⚡⚡⚡                              */
+  /* 💥💥💥─────────────────────────────────────────────────────────────────────────────💥💥💥 */
+
+
   const scaleAnim = useSharedValue(0.1);
   const viewTranslate = useSharedValue(0);
   const rStyle = useAnimatedStyle(() => {
@@ -95,12 +101,12 @@ const ListItem = React.memo(({
       translateX.value = event.translationX;
     })
     .onFinalize(() => {
-      translateX.value = withDelay(2000, withTiming(0, { duration: 300 }));
+      translateX.value = withDelay(2000, withTiming(0, { duration: 100 }));
     })
 
   const iconStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: withTiming(translateX.value < -40 ? 1 : 0) }],
+      transform: [{ scale: withSpring(translateX.value < -40 ? 1 : 0) }],
     };
   });
   const deleteButtonStyle = useAnimatedStyle(() => {
@@ -112,6 +118,8 @@ const ListItem = React.memo(({
       ],
     };
   });
+
+
   return (
     <GestureHandlerRootView>
       <GestureDetector gesture={swipeGesture}>
