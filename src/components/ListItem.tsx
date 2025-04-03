@@ -135,6 +135,7 @@ const ListItem = React.memo(({
             style={styles.button}
             onPress={() => setTimeout(() => handleCompleteCheck(item.id, !item.isCompleted), 100)}
             onLongPress={() => {
+              if (item.isCompleted) return
               Vibration.vibrate(50)
               setIsEditing(true)
             }}
