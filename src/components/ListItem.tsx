@@ -105,6 +105,11 @@ const ListItem = React.memo(({
       translateX.value = withDelay(2000, withTiming(0, { duration: 100 }));
     })
 
+  const submitIconStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: withSpring(isEditing ? 1 : 0) }],
+    };
+  });
   const iconStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: withSpring(translateX.value < -40 ? 1 : 0) }],
@@ -152,11 +157,15 @@ const ListItem = React.memo(({
                 style={styles.textInputStyle}
                 defaultValue={item.task}
                 onChangeText={HandleTextEnter}
-                onSubmitEditing={UpdateTaskHandler}
                 autoFocus={true}
-              // multiline
+                multiline
               />}
           </Pressable>
+          {isEditing && <View style={styles.submitIconContainer}>
+            <Pressable onPress={UpdateTaskHandler}>
+              <Reanimated.Image source={imagePath.tick} style={[styles.submitIcon, submitIconStyle]} />
+            </Pressable>
+          </View >}
         </Reanimated.View>
       </GestureDetector>
       <View style={styles.iconContainer}>
@@ -214,6 +223,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     borderColor: colors.blue,
+  },
+  submitIconContainer: {
+    flex: 1,
+    position: 'absolute',
+    width: "100%",
+    height: "100%",
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    paddingRight: 20,
+  },
+  submitIcon: {
+    height: 28,
+    width: 28,
   },
   iconContainer: {
     flex: 1,

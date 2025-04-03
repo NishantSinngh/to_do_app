@@ -5,7 +5,6 @@ import imagePath from '../assets/imagePath';
 import TaskList from './TaskList';
 import colors from '../constants/colors';
 import InputModal from '../components/InputModal';
-import Overlay from '../components/Overlay';
 
 const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
@@ -44,9 +43,6 @@ const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
           </View>
         </View>
       </View>
-
-      {isVisible && <Overlay isVisible={isVisible} onPress={handleModal} />}
-
       {isVisible && <InputModal isVisible={isVisible} onCancel={handleModal} />}
     </React.Fragment>
   );

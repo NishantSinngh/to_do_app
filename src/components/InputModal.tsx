@@ -5,11 +5,10 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableWithoutFeedback,
   View,
   BackHandler,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import colors from '../constants/colors';
 import Animated, {
   useSharedValue,
@@ -83,34 +82,58 @@ const InputModal = React.memo(({
     opacity: opacity.value,
   }));
 
+  const backgroundColor = useSharedValue(colors.opacity0);
+  useEffect(() => {
+    if (isVisible) {
+      backgroundColor.value = withTiming(colors.overlay, { duration: 500 })
+    }
+  }, [isVisible]);
+  const backDropStyle = useAnimatedStyle(() => ({
+    backgroundColor: backgroundColor.value
+  }));
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    setTimeout(() => inputRef.current?.focus(), 100);
+  }, []);
+
   return (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      <Animated.View style={[styles.appContainer, animatedStyle]}>
-        <View style={styles.rectangle} />
-        <Text style={styles.headerText}>Enter New Task</Text>
-        <View style={{ flexDirection: 'row' }}>
-          <View style={styles.textInputContainer}>
-            <TextInput
-              multiline
-              placeholder="Enter task here..."
-              onChangeText={HandleTextEnter}
-              placeholderTextColor={colors.darkBluish}
-              style={styles.inputStyle}
-              autoFocus={true}
-            />
+    <React.Fragment>
+      <Animated.View
+        pointerEvents={"box-only"}
+        onTouchStart={() => onCancel()}
+        onTouchEnd={() => null}
+        style={[{ ...StyleSheet.absoluteFillObject }, backDropStyle]}
+      />
+        <Animated.View
+          style={[styles.appContainer, animatedStyle]}>
+          <View style={styles.rectangle} />
+          <Text style={styles.headerText}>Enter New Task</Text>
+          <View
+            style={{ flexDirection: 'row' }}
+          >
+            <View style={styles.textInputContainer}>
+              <TextInput
+                ref={inputRef}
+                multiline
+                placeholder="Enter task here..."
+                onChangeText={HandleTextEnter}
+                placeholderTextColor={colors.darkBluish}
+                style={styles.inputStyle}
+              />
+            </View>
+            <View style={styles.addButtonContainer}>
+              <Pressable
+                android_ripple={{ color: colors.ripple }}
+                onPress={AddTaskHandler}
+                style={styles.addButton}>
+                <Image source={imagePath.send} style={styles.sendIcon} />
+              </Pressable>
+            </View>
           </View>
-          <View style={styles.addButtonContainer}>
-            <Pressable
-              android_ripple={{ color: colors.ripple }}
-              onPress={AddTaskHandler}
-              style={styles.addButton}>
-              <Image source={imagePath.send} style={styles.sendIcon} />
-            </Pressable>
-          </View>
-        </View>
-        {error && <Text style={styles.errorText}>Please check your entered text</Text>}
-      </Animated.View>
-    </TouchableWithoutFeedback>
+          {error && <Text style={styles.errorText}>Please check your entered text</Text>}
+        </Animated.View>
+    </React.Fragment>
   );
 });
 
