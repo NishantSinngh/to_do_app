@@ -18,6 +18,8 @@ import Animated, {
 import actions from '../redux/actions';
 import imagePath from '../assets/imagePath';
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
 const InputModal = React.memo(({
   isVisible,
   onCancel,
@@ -45,26 +47,26 @@ const InputModal = React.memo(({
     onCancel()
   }
 
-  const opacity = useSharedValue(0);
-  const modalTranslateY = useSharedValue(530);
-  useEffect(() => {
-    if (isVisible) {
-      modalTranslateY.value = withTiming(0, { duration: 400 })
-      opacity.value = withTiming(1, { duration: 100 });
-    }
-  }, [isVisible]);
+  // const opacity = useSharedValue(0);
+  // const modalTranslateY = useSharedValue(530);
+  // useEffect(() => {
+  //   if (isVisible) {
+  //     modalTranslateY.value = withTiming(0, { duration: 400 })
+  //     opacity.value = withTiming(1, { duration: 100 });
+  //   }
+  // }, [isVisible]);
 
-  function ClosingModal() {
-    modalTranslateY.value = withTiming(530, { duration: 300 })
-    opacity.value = withTiming(0, { duration: 300 });
-    setTimeout(() => {
-      onCancel();
-    }, 150);
-  }
+  // function ClosingModal() {
+  //   modalTranslateY.value = withTiming(530, { duration: 300 })
+  //   opacity.value = withTiming(0, { duration: 300 });
+  //   setTimeout(() => {
+  //     onCancel();
+  //   }, 150);
+  // }
   useEffect(() => {
     const onBackPress = () => {
       if (isVisible) {
-        ClosingModal()
+        onCancel()
         return true;
       }
       return false;
@@ -77,10 +79,10 @@ const InputModal = React.memo(({
     };
   }, [isVisible, onCancel]);
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: modalTranslateY.value }],
-    opacity: opacity.value,
-  }));
+  // const animatedStyle = useAnimatedStyle(() => ({
+  //   transform: [{ translateY: modalTranslateY.value }],
+  //   opacity: opacity.value,
+  // }));
 
   const backgroundColor = useSharedValue(colors.opacity0);
   useEffect(() => {
@@ -99,40 +101,38 @@ const InputModal = React.memo(({
 
   return (
     <React.Fragment>
-      <Animated.View
-        pointerEvents={"box-only"}
-        onTouchStart={() => onCancel()}
-        onTouchEnd={() => null}
-        style={[{ ...StyleSheet.absoluteFillObject }, backDropStyle]}
+      <AnimatedPressable
+        onPress={onCancel}
+        style={[{ ...StyleSheet.absoluteFillObject, backgroundColor: colors.overlay },]}
       />
-        <Animated.View
-          style={[styles.appContainer, animatedStyle]}>
-          <View style={styles.rectangle} />
-          <Text style={styles.headerText}>Enter New Task</Text>
-          <View
-            style={{ flexDirection: 'row' }}
-          >
-            <View style={styles.textInputContainer}>
-              <TextInput
-                ref={inputRef}
-                multiline
-                placeholder="Enter task here..."
-                onChangeText={HandleTextEnter}
-                placeholderTextColor={colors.darkBluish}
-                style={styles.inputStyle}
-              />
-            </View>
-            <View style={styles.addButtonContainer}>
-              <Pressable
-                android_ripple={{ color: colors.ripple }}
-                onPress={AddTaskHandler}
-                style={styles.addButton}>
-                <Image source={imagePath.send} style={styles.sendIcon} />
-              </Pressable>
-            </View>
+      <Animated.View
+        style={[styles.appContainer]}>
+        <View style={styles.rectangle} />
+        <Text style={styles.headerText}>Enter New Task</Text>
+        <View
+          style={{ flexDirection: 'row' }}
+        >
+          <View style={styles.textInputContainer}>
+            <TextInput
+              ref={inputRef}
+              multiline
+              placeholder="Enter task here..."
+              onChangeText={HandleTextEnter}
+              placeholderTextColor={colors.darkBluish}
+              style={styles.inputStyle}
+            />
           </View>
-          {error && <Text style={styles.errorText}>Please check your entered text</Text>}
-        </Animated.View>
+          <View style={styles.addButtonContainer}>
+            <Pressable
+              android_ripple={{ color: colors.ripple }}
+              onPress={AddTaskHandler}
+              style={styles.addButton}>
+              <Image source={imagePath.send} style={styles.sendIcon} />
+            </Pressable>
+          </View>
+        </View>
+        {error && <Text style={styles.errorText}>Please check your entered text</Text>}
+      </Animated.View>
     </React.Fragment>
   );
 });
