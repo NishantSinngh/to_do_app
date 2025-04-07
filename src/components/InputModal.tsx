@@ -1,6 +1,5 @@
 import {
   Image,
-  Keyboard,
   Pressable,
   StyleSheet,
   Text,
@@ -11,9 +10,10 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import colors from '../constants/colors';
 import Animated, {
-  useSharedValue,
-  withTiming,
-  useAnimatedStyle,
+  FadeIn,
+  FadeOut,
+  SlideInDown,
+  SlideOutDown,
 } from 'react-native-reanimated';
 import actions from '../redux/actions';
 import imagePath from '../assets/imagePath';
@@ -83,16 +83,6 @@ const InputModal = React.memo(({
   //   transform: [{ translateY: modalTranslateY.value }],
   //   opacity: opacity.value,
   // }));
-
-  const backgroundColor = useSharedValue(colors.opacity0);
-  useEffect(() => {
-    if (isVisible) {
-      backgroundColor.value = withTiming(colors.overlay, { duration: 500 })
-    }
-  }, [isVisible]);
-  const backDropStyle = useAnimatedStyle(() => ({
-    backgroundColor: backgroundColor.value
-  }));
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
@@ -102,11 +92,16 @@ const InputModal = React.memo(({
   return (
     <React.Fragment>
       <AnimatedPressable
+        entering={FadeIn.duration(300)}
+        exiting={FadeOut.duration(300)}
         onPress={onCancel}
         style={[{ ...StyleSheet.absoluteFillObject, backgroundColor: colors.overlay },]}
       />
       <Animated.View
-        style={[styles.appContainer]}>
+        entering={SlideInDown}
+        exiting={SlideOutDown}
+        style={[styles.appContainer]}
+      >
         <View style={styles.rectangle} />
         <Text style={styles.headerText}>Enter New Task</Text>
         <View

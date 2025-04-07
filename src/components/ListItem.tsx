@@ -8,8 +8,13 @@ import Reanimated, {
   withTiming,
   withSpring,
   withSequence,
-  runOnJS,
   withDelay,
+  FadeIn,
+  FadeInUp,
+  RollInRight,
+  FlipInYLeft,
+  PinwheelIn,
+  ZoomIn,
 } from 'react-native-reanimated';
 import actions from '../redux/actions';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -66,7 +71,6 @@ const ListItem = React.memo(({
   /* 💥💥💥─────────────────────────────────────────────────────────────────────────────💥💥💥 */
 
 
-  const scaleAnim = useSharedValue(0.1);
   const viewTranslate = useSharedValue(0);
   const rStyle = useAnimatedStyle(() => {
     const isVisible = Boolean(
@@ -81,17 +85,15 @@ const ListItem = React.memo(({
   useEffect(() => {
     if (item.isCompleted) {
       Vibration.vibrate(40)
-      scaleAnim.value = withSpring(1);
       viewTranslate.value = withSequence(
         withTiming(-10, { duration: 50 }),
         withTiming(10, { duration: 50 }),
         withTiming(0, { duration: 50 })
       );
     } else {
-      scaleAnim.value = 0;
       viewTranslate.value = 0;
     }
-  }, [item.isCompleted, scaleAnim, viewTranslate]);
+  }, [item.isCompleted, viewTranslate]);
 
   const translateX = useSharedValue(0);
 
@@ -105,11 +107,6 @@ const ListItem = React.memo(({
       translateX.value = withDelay(2000, withTiming(0, { duration: 100 }));
     })
 
-  const submitIconStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: withSpring(isEditing ? 1 : 0) }],
-    };
-  });
   const iconStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: withSpring(translateX.value < -40 ? 1 : 0) }],
@@ -144,8 +141,9 @@ const ListItem = React.memo(({
               <View style={styles.checkBox} />
             ) : (
               <Reanimated.Image
+                entering={ZoomIn.springify()}
                 source={imagePath.checkBox}
-                style={[styles.checkBoxImage, { transform: [{ scale: scaleAnim }] }]}
+                style={[styles.checkBoxImage,]}
               />
             )}
 
@@ -164,7 +162,11 @@ const ListItem = React.memo(({
           </Pressable>
           {isEditing && <View style={styles.submitIconContainer}>
             <Pressable onPress={UpdateTaskHandler}>
-              <Reanimated.Image source={imagePath.tick} style={[styles.submitIcon, submitIconStyle]} />
+              <Reanimated.Image
+                entering={ZoomIn.springify()}
+                source={imagePath.tick}
+                style={[styles.submitIcon]}
+              />
             </Pressable>
           </View >}
         </Reanimated.View>

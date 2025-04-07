@@ -42,6 +42,7 @@ const MainScreen = ({ taskLoading }: { taskLoading: boolean }) => {
             </Pressable>
           </View>
         </View>
+        
       </View>
       {isVisible && <InputModal isVisible={isVisible} onCancel={handleModal} />}
     </React.Fragment>

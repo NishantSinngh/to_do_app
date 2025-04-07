@@ -6,7 +6,6 @@ import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { taskList } from './src/redux/reducers/task';
-import colors from './src/constants/colors';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
